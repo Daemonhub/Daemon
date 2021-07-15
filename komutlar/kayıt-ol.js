@@ -1,52 +1,52 @@
 const Discord = require('discord.js');
-module.exports.run = async (client, msg, args) => {
-  const db = require('quick.db')
-  let kullanıcı = await db.fetch(`ksistem_${msg.guild.id}`);
+const db = require('quick.db')
 
-  if( kullanıcı == undefined){
-
-  }else{
-      if( kullanıcı == "acik"){
-    let kayıt = msg.author
-
-         const kanal = db.fetch(`kkanal_${msg.guild.id}`).replace("<#", "").replace(">", "")
-
-         const channelss = db.fetch(`kkanal_${msg.guild.id}`).replace("<#", "").replace(">", "")
-
-  if (msg.channel.id !== kanal) return msg.channel.send(`Bu komutu sadece <#${kanal}> kanalında kullanabilirsin.`).then(msg => msg.delete(10000))
-    if (msg.channel.id == kanal) {
-                              msg.guild.channels.forEach(async (channel, id) => {
-                await channel.overwritePermissions(msg.author, {
-                    VIEW_CHANNEL: true
-                });
-            });
-                          
-                 msg.guild.channels.get(channelss).overwritePermissions(msg.author, {
-                    VIEW_CHANNEL: false
-                });
-                   const rol = db.fetch(`krol_${msg.guild.id}`)
-            msg.member.addRole(rol)
-    msg.channel.send({
-        embed: {
-            color: Math.floor(Math.random() * (0xFFFFFF + 1)),
-            description: ("Tebrikler kayıt oldunuz, yönlendiriliyorsunuz bekleyin.")
-        }
-    
-                     
-    })
-      }
+exports.run = async (client, message, args) => {
+  
+  let isim31 = await db.fetch(`isimsistemi_${message.guild.id}`);
+  let ch = await db.fetch(`kayitKanal_${message.guild.id}`);
+  let ar = await db.fetch(`kayitAR_${message.guild.id}`);
+  let vr = await db.fetch(`kayitVR_${message.guild.id}`);
+  let lh = await db.fetch(`kayitLog_${message.guild.id}`);
+  
+  if (!isim31) return 
+  if (!ch) return 
+  if (!ar) return
+  if (!vr) return 
+  if (!lh) return
+  if (!isim31.includes(`-yas-`)) {
+  let isim = args[0]
+  let yas = args[1];
+  if (!isim) return message.channel.send(`Seni Kayıt Etmem İçin Bir İsim Girmelisin : \`!kayıt Mahmut\``)
+ 
+  message.reply(`Kaydınız Oluşturuldu.`)
+  message.member.setNickname(isim31.replace("-uye-", `${isim}`))
+  message.member.removeRole(message.guild.roles.get(ar));
+  message.member.addRole(message.guild.roles.get(vr));
+      
+  return client.channels.get(lh).send(`:scroll: <@${message.author.id}> İçin Kayıt İşlemi Başarı İle Tamamlandı. :clipboard:`)
   }
-}
+  let isim = args[0]
+  let yas = args[1];
+  if (!isim) return message.channel.send(`Seni Kayıt Etmem İçin Bir İsim Girmelisin : \`!kayıt Mahmut 18\``)
+  if (!yas) return message.channel.send(`Seni Kayıt Etmem İçin Bir Yaş Girmelisin : \`!kayıt Mahmut 18\``)
+
+  
+    message.reply(`Kaydınız Oluşturuldu.`)
+  message.member.setNickname(isim31.replace("-uye-", `${isim}`).replace("-yas", `${yas}`))
+  message.member.removeRole(message.guild.roles.get(ar));
+  message.member.addRole(message.guild.roles.get(vr));
+      
+  client.channels.get(lh).send(`:scroll: <@${message.author.id}> İçin Kayıt İşlemi Başarı İle Tamamlandı. :clipboard:`)
 }
 exports.conf = {
-    enabled: true,
-    guildOnly: true,
-    aliases: ['kayıt','kayıtol'],
-    permLevel: 0
-};
-
+  enabled: true,
+  guildOnly: false,
+  aliases: ["kayıtol"],
+  permLevel: 0
+}
 exports.help = {
-    name: 'kayıt-ol',
-    description: 'Sunucuya kayıt olursunuz!',
-    usage: 'kayıt-ol'
-};
+  name: "kayıt-ol",
+  description: "Kayıt olmanızı sağlar.",
+  usage: "!!kayıt-ol"
+}

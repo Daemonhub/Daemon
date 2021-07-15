@@ -1,59 +1,41 @@
 const Discord = require('discord.js');
-const fs = require('fs');
 const db = require('quick.db')
-var ayarlar = require('../ayarlar.json');
-
-exports.run = async(client, message, args) => {
-  if (!db.has(`premod_${message.guild.id}`) == true) {
-    
-      
-      return message.channel.send(" Bu sunucuda **premium mod aktif değil**, bu sebepten dolayı premium sunucu kodlarını kullanamazsınız.")
-
-    
-  } else {
+exports.run = (client, message, args) => { 
   
-    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`Bu komutu kullanabilmek için **Yönetici** iznine sahip olmalısın!`);
+const embed = new Discord.RichEmbed()  
+.setAuthor("EŞŞEK-AT", client.user.avatarURL)
+.setColor('BLUE')
+.setTitle(`MC-EŞŞEK BOT`)
+.setURL("https://discord.gg/jRzZB7")
+.addField(`• \`!kayit-kanal-ayarla #kanal\`》`, "Üyelerin Kayıt Olacağı Kanal")
+.addField(`• \`!kanal-ayarla #kanal\`》`, "Üyeler Kayıt Olunca Bildirim Yollanan Kanal")
+.addField(`• \`!isim-sistemi -uye- -yas-\`》`, `
+Üye İsim Sistemi Özgürce Yerleştirin Değişkenler -uye- -yas-
+Sadece Yaş Seçeneği Eklemezseniz Yaşı Sormayacaktır.
+`)
+.addField(`• \`!kayit-verilecek-rol-ayarla @rol\`》`, "Kayıt Olan Kullanıcıya Otomatik Verilecek Rol")
+.addField(`• \`!kayıt-alınacak-rol-ayarla @rol\`》`, "Kayıt Olan Kullanıcıdan Otomatik Alınacak (Silinecek) Rol")
+.addField(`• \`!kayit-sistemi-kapat\`》`, "Kayıt Sistemini Kapatır Ve Tüm Ayarları Sıfırlar.")
+.addField(`• \`!giriş-sistemi Hoşgeldin -uye- Kayıt Olmak İçin !kayıt mahmut 18\`》`, "Giriş Mesajını Özgürce Editleyebilirsiniz Değişkenler -uye- -uyetag-")
+.addField(`• \`!isim-temizleyici-ac\`》 **PREMIUM SUNUCULAR İÇİN**`, "Üyeler İsimlerinde A-Z Harici Kelime Kullanamazlar")
+.addField(`• \`!isim-temizleyici-kapat\`》 **PREMIUM SUNUCULAR İÇİN**`, "Üyeler İsimlerinde A-Z Harici Kelime Kullanabilirler")
+.setDescription(`
+KAYIT Sistemi Kullanımı
+`)
+.setTimestamp()
+.setFooter('© STARK-ZEHİR',client.user.avatarURL)
 
-  const db = require('quick.db');
-  
+ message.channel.send(embed) 
+  };
+exports.conf = {
+  enabled: true,  
+  guildOnly: false, 
+  aliases: ["kayıt-sistemi"], 
+  permLevel: 0
+};
 
-  
-    let args = message.content.split(' ').slice(1);
-    const secenekler = args.slice(0).join(' ');
-
-    if(secenekler.length < 1)  return message.reply("Lütfen aç yada kapat yazınız.");
-    //if(secenekler === "aç" || "kapat") return message.channel.send(errembed);
-
-  if (secenekler !== "aç" && secenekler !== "kapat" && secenekler !== "on" && secenekler !== "off")  return message.reply()
-
-    if (secenekler === "aç" || secenekler === "on") {
-        
-    var i = db.set(`ksistem_${message.guild.id}`, "acik")
-    
-        message.channel.send(("!", "") + `${i.replace("acik", "Kayıt Sistemi Komutları Artık Kullanılabilir.")}`)
-    
- 
-    };
-
-    if (secenekler === "kapat") {
-    
-    db.delete(`ksistem_${message.guild.id}`)
-    
-        message.channel.send("Kayıt Sistemi Kapatıldı Artık Komutlarıda Kullanılamaz.")
-    
-    }
-  }
-    };
-
-    exports.conf = {
-        enabled: true,
-        guildOnly: false,
-        aliases: ['kayıt-sistemi'],
-        permLevel: `Yeterli yetki yok`
-      };
-      
-    exports.help = {
-        name: 'kayıtsistemi',
-        description: 'kayıt sistemini açar veya kapatırsınız.',
-        usage: 'kayıtsistemi <aç/kapat>',
-    };
+exports.help = {
+  name: 'kayıtsistemi',
+  description: 'sayaç', 
+  usage: 'sayaç'
+};

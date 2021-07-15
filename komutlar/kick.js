@@ -1,44 +1,51 @@
-
-
 const Discord = require('discord.js');
-exports.run = (client, message, args) => {
-  if (!message.guild) {
-  const ozelmesajuyari = new Discord.RichEmbed()
-  .setColor(0xFF0000)
-  .setTimestamp()
-  .setAuthor(message.author.username, message.author.avatarURL)
-  .addField(':warning: Uyarı :warning:', '`kick` adlı komutu özel mesajlarda kullanamazsın.')
-  return message.author.sendEmbed(ozelmesajuyari); }
-  let guild = message.guild
-  let reason = args.slice(1).join(' ');
-  let user = message.mentions.users.first();
-  let modlog = guild.channels.find('name', 'mod-log');
-  if (!modlog) return message.reply(':warning: **Uyarı** :warning:', '`mod-log` **adlı Kanal Bulunamadı!**');
-  if (reason.length < 1) return message.reply('Sunucudan atma sebebini yazmalısın.');
-  if (message.mentions.users.size < 1) return message.reply('Kimi sunucudan atacağını yazmalısın.').catch(console.error);
+const db = require('quick.db')
 
-  if (!message.guild.member(user).kickable) return message.reply('Yetkilileri sunucudan atamam.');
-  message.guild.member(user).kick();
 
-  const embed = new Discord.RichEmbed()
-    .setColor(0x00AE86)
-    .setTimestamp()
-    .addField('Eylem:', 'Sunucudan atma :bangbang: ')
-    .addField('Atılan Kullanıcı:', `${user.username}#${user.discriminator} (${user.id})`)
-    .addField('Atan Yetkili:', `${message.author.username}#${message.author.discriminator}`)
-    .addField('Atma Sebebi: ', reason);
-  return guild.channels.get(modlog.id).sendEmbed(embed);
+exports.run = async(client, message, args) => {
+ if (!message.member.hasPermission("BAN_MEMBERS")) return message.reply(`Bu komutu kullanabilmek için "\`Üyeleri Yasakla\`" yetkisine sahip olmalısın.`); 
+  const banl = db.fetch(`banlimit_${message.guild.id}`);
+  const rol = db.fetch(`yasaklamaRol_${message.guild.id}`);
+  const log = db.fetch(`yasaklamaKanal_${message.guild.id}`);
+  if (!log) return;
+  if (!rol) return;
+  if (!banl) return;
+  
+  if (message.member.roles.has(rol)) {
+    const kisi = message.mentions.users.first()
+    const sebep = args[1]
+    if (!kisi) {
+      return message.reply(`, Banlanıcak Kullanıcıyı Etiketlemelisin.
+Etiketliyorsan Bu Hatayı Alıyorsan O Üyenin Görebildiği Bir Kanalda Banlamayı Denemelisin`)
+    }
+    
+    if (!sebep) {
+      return message.reply(`Hata: Sunucudan banlancak kişiyi veya ban sebebini yazmadın!`)
+    }
+    if (banl == db.fetch(`banP_${message.author.id}`)) {
+    return message.channel.send(`<@${message.author.id}> **Hata:** Ban limitin doldu!`)  
+    } else {
+    client.channels.get(log).send(`${kisi} - <@${message.author.id}> Tarafından ${sebep} Nedeniyle Sunucudan Yasaklandı. ${client.emojis.get("647746144155467786")}`)  
+    message.guild.kick(kisi.id, sebep)
+    return db.add(`banP_${message.author.id}`, 1)
+    }
+      } else {
+    return message.reply("Ban Atabilmek İçin Sunucu Sahibinin Ayarladığı Role Sahip Olmalısınız.")
+  } 
+    
+  
 };
 
 exports.conf = {
   enabled: true,
-  guildOnly: true,
-  aliases: ['at'],
-  permLevel: 2
+  guildOnly: false,
+  aliases: ["at"],
+  permLevel: 0
 };
 
 exports.help = {
   name: 'kick',
-  description: 'İstediğiniz kişiyi sunucudan atar.',
-  usage: 'kick [kullanıcı] [sebep]'
+  description: 'Ban limiti.',
+  usage: 'banlimit',
+  kategori: 'yetkili'
 };
