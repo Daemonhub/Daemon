@@ -1,0 +1,192 @@
+<!--HEADER-->
+<%- include('başlık.ejs', {bot, user, path}) %>
+
+      
+
+  <!-- HEADER -->
+ 
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<div class="container">
+
+	<div class="row justify-content-md-center">
+     	 <div class="container">
+  <div class="jumbotron" style="background-color:#24252a">
+    <div align="center">
+      <div align="center"><h2 style="color: #fff;"><i class="" aria-hidden="true"></i>Filtre Sistemi</h2></div>
+  <div align="center"><h2 style="color: #fff;"><i class="" aria-hidden="true"></i>━━━━━━━━━━</h2></div>
+  </div>
+      
+
+     
+    
+            </div>
+	
+  <!--<center><h7 style="color:red">Bakımda...</h7></center>-->
+  
+  
+  
+	<div class="row">
+    
+<div class="col">
+    <div class="container">
+      <form method="post">
+        <ul class="list-group list-group-flush">
+          
+    
+
+              
+     <div class="row">
+      <div class="col-25">
+          <label for="küfürEngel">Küfür Engelleme Sistemi</label>
+      </div>
+      <div class="col-75">
+        <% if (bot.ayar.has(`küfürE_${guild.id}`) === false) { %>
+        <label style="margin-right:80%;" class="switch">
+         <input type="checkbox" id="küfürEngel" name="küfürEngel" value="aktif">
+         <span class="slider round"></span>
+        </label>
+          <% } %>
+					<% if(bot.ayar.has(`küfürE_${guild.id}`) === true) { %>
+        <label style="margin-right:80%;" class="switch">
+         <input type="checkbox" id="küfürEngel" name="küfürEngel" value="deaktif" checked>
+         <span class="slider round"></span>
+        </label>
+          <% } %>
+      </div>
+    </div>
+    
+
+  
+    
+     <div class="row">
+      <div class="col-25">
+          <label for="linkEngel">Link/Reklam Engelleme Sistemi</label>
+      </div>
+      <div class="col-75">
+        <% if (bot.ayar.has(`linkE_${guild.id}`) === false) { %>
+        <label style="margin-right:80%;" class="switch">
+         <input type="checkbox" id="linkEngel" name="linkEngel" value="aktif">
+         <span class="slider round"></span>
+        </label>
+          <% } %>
+					<% if(bot.ayar.has(`linkE_${guild.id}`) === true) { %>
+        <label style="margin-right:80%;" class="switch">
+         <input type="checkbox" id="linkEngel" name="linkEngel" value="deaktif" checked>
+         <span class="slider round"></span>
+        </label>
+          <% } %>
+      </div>
+    </div>
+    
+     <div class="row">
+      <div class="col-25">
+          <label for="capslockEngel">Büyük harf Engelleme Sistemi</label>
+      </div>
+      <div class="col-75">
+        <% if (bot.ayar.has(`capsE_${guild.id}`) === false) { %>
+        <label style="margin-right:80%;" class="switch">
+         <input type="checkbox" id="capslockEngel" name="capslockEngel" value="aktif">
+         <span class="slider round"></span>
+        </label>
+          <% } %>
+					<% if(bot.ayar.has(`capsE_${guild.id}`) === true) { %>
+        <label style="margin-right:80%;" class="switch">
+         <input type="checkbox" id="capslockEngel" name="capslockEngel" value="deaktif" checked>
+         <span class="slider round"></span>
+        </label>
+          <% } %>
+      </div>
+    </div>
+    
+  </div>
+          <div class="row">
+            <div class="col-25">
+              <label for="kelimefiltre">Kelime Filtresi Sistemi</label>
+            </div>
+            <div class="col-75">
+           
+                
+                
+                <input type="text" id="kelimefiltre" name="kelimefiltre" placeholder="Filtreye eklenecek kelimeyi yazınız."> 
+                
+              <div id="demo"></div>
+                
+             
+         
+            
+            </div>
+            
+          
+            
+            <button style="background-color:orange; color:#fff" type="sumbit" id="formbtn" class="btn btn-default"><i class="fa fa-fw fa-save" aria-hidden="true"></i> Kelimeyi Ekle</button>    
+          </div>
+          
+         
+          
+          <br>
+          <%if(bot.ayar.fetch(`filtre_${guild.id}`) === null || bot.ayar.fetch(`filtre_${guild.id}`).length <= 0) {%>
+      
+               <h5 align="center" style="color:#fff">
+                    Kelime filtresine hiç kelime eklenmemiş.
+              </h5>
+        
+            <%} else {%>
+          
+        
+        
+          <table class="table table-hover" style="background-color:#222">
+            <thead>
+                <tr>
+                  <th scope="col">Kelime</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                    <%for(var i = 0; i < bot.ayar.fetch(`filtre_${guild.id}`).length; i++) {%>
+              <%var k = bot.ayar.fetch(`filtre_${guild.id}`).includes(i) %>
+              <tr>
+                  <th scope="row"><%=bot.ayar.fetch(`filtre_${guild.id}`)[i]%></th>
+            <td><a class="btn btn-danger" href="/dashboard/<%=guild.id%>/filtre/sil/<%=bot.ayar.fetch(`filtre_${guild.id}`)[i]%>">Filtreyi Sil</a></td>
+
+                 </tr>
+
+                  <%}%>
+        
+              <%}%>
+            </tbody>
+        </table>
+          
+          </ul>
+        
+        
+        
+        
+          <div style="width: 100%; text-align: right; margin-top: 15px;">
+      <button style="background-color:blue; color:#fff" type="sumbit" id="formbtn" class="btn btn-default" ><i class="fa fa-fw fa-save" aria-hidden="true"></i> Kaydet</button>
+      <a href="yonet" button style="background-color:orange; color:#fff" type="sumbit" id="formbtn" class="btn btn-default"><i class="fa fa-mail-reply" aria-hidden="true"></i> Geri Dön</button> </a>    </div>
+
+            
+            
+          </div>
+      </form>
+  </div>
+    
+</div>
+
+     
+  
+<br>
+<script>
+	var ts = parseInt($('#guildCreate').text());
+	$('#guildCreate').html(`<strong>Created:</strong>: ${moment(ts).format('MMMM Do YYYY (h:mm a)')}`);  
+  
+  
+ 
+  
+  
+  
+  
+</script>
